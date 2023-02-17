@@ -1,0 +1,26 @@
+{
+	"content_name": "sample1",
+	"path_of_dir_containing_only_texture_yuv": "path/to/directory/where/it/has/yuv/only/texture/files",
+	
+	"path_of_MIV_json_file": "path/to/directory/where/has/miv-like-json/NAME.json",
+
+	"input_video_width_height": "1920x1080",
+	"input_frame_rate": 30,
+
+	"experiment_config":
+	{
+		"experiment_name": "TEST1",
+
+		"initial_n_iters": 10000,
+		"transfer_learning_n_iters": 1500,
+
+		"frame_start": 1,
+		"frame_end": 97,
+
+		"render_pose_trace": "true",
+		"path_of_MIV_pose_trace_file": "path/to/directory/where/has/miv-like-pose-trace/NAME1.csv",
+
+		"render_test_set": "false",
+		"test_set_view": [3, 6]
+	}
+}

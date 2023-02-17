@@ -1,0 +1,158 @@
+import json
+import os
+from os import path
+import subprocess
+
+f_config = open('./config.json', 'r')
+config_data = json.load(f_config)
+f_config.close()
+
+content_name = config_data["content_name"]
+start_dir = f"./Data/{content_name}"
+
+miv_json_path = config_data["path_of_MIV_json_file"]
+num_of_original_frames = 0		 # will be modified
+
+input_frame_rate = config_data["input_frame_rate"]
+
+if path.exists(f'{start_dir}/images'):
+	pass
+else:
+	yuv_dir = config_data["path_of_dir_containing_only_texture_yuv"] 
+	input_video_size = config_data["input_video_width_height"]
+	input_frame_rate = config_data["input_frame_rate"]
+  
+	video_file_list = os.listdir(yuv_dir)
+	video_file_list = [x for x in video_file_list if x[-3:]=='yuv' and 'depth' not in x]
+	num_of_views = len(video_file_list)
+  
+	start_with_zero_file=  [x for x in video_file_list if 'v0_' in x or 'v00_' in x]
+	if len(start_with_zero_file) > 0:
+		view_start_idx = 0
+	else:
+		view_start_idx = 1
+	
+	os.system(f'mkdir {start_dir}')
+	os.system(f'mkdir {start_dir}/images')
+
+	for V in range(num_of_views):
+		video_file = [x for x in video_file_list \
+		 if f'v{V+view_start_idx}_' in x or f'v0{V+view_start_idx}_' in x]
+		video_file = video_file[0]
+		os.system(f'mkdir {start_dir}/images/{content_name}_v{V+view_start_idx}; \
+			ffmpeg -pixel_format yuv420p10le \
+		-video_size {input_video_size} -framerate {input_frame_rate} \
+		-i {yuv_dir}/{video_file} \
+		-f image2 -pix_fmt rgba \
+		{start_dir}/images/{content_name}_v{V+view_start_idx}/image-v{V+view_start_idx}-f%3d.png')
+
+	num_of_original_frames = len(os.listdir(f'{start_dir}/images/{content_name}_v{view_start_idx}'))
+	
+
+	os.system(f'mkdir {start_dir}/frames')
+	for F in range(1, num_of_original_frames+1):
+		os.system(f'mkdir {start_dir}/frames/frame{F}')
+	
+
+	subprocess.call(f'python ./camorph/main.py 0 {miv_json_path} \
+		  {start_dir}/transforms.json {num_of_views} 0', shell=True)
+
+	f_tr_json = open(f'{start_dir}/transforms.json', 'r')
+	orig_tr_json = json.load(f_tr_json)
+	tr_json = orig_tr_json
+	f_tr_json.close()
+	tr_json["aabb_scale"] = 64
+	translation_val_sample = \
+		( abs(tr_json["frames"][0]["transform_matrix"][0][3]) \
+			+ abs(tr_json["frames"][0]["transform_matrix"][1][3]) \
+			+ abs(tr_json["frames"][1]["transform_matrix"][0][3]) \
+			+ abs(tr_json["frames"][1]["transform_matrix"][1][3]) ) / 4			
+	if translation_val_sample > 15:
+		tr_json["scale"] = 0.01
+	f_tr_write = open(f'{start_dir}/transforms.json', 'w+')
+	json.dump(tr_json, f_tr_write, ensure_ascii=False, indent='\t')
+	f_tr_write.close()
+	
+	for F in range(1, num_of_original_frames+1):
+		os.system(f'cp {start_dir}/transforms.json  {start_dir}/frames/frame{F}')
+	
+
+	f_fp_read = open(f'{start_dir}/transforms.json', 'r')
+	orig = json.load(f_fp_read)
+	f_fp_read.close()
+	for F in range(1, num_of_original_frames+1):
+		new = orig
+		orig_frames = orig["frames"]
+		for j, data_frame in enumerate(orig_frames):
+			new["frames"][j]["file_path"] = \
+				  f"../../images/{content_name}_v{j+view_start_idx}/image-v{j+view_start_idx}-f{str(F).zfill(3)}.png"
+		f_fp_write = open(f"{start_dir}/frames/frame{F}/transforms.json", 'w+')
+		json.dump(new, f_fp_write, ensure_ascii=False, indent='\t')
+		f_fp_write.close()
+
+
+exp_name = config_data["experiment_config"]["experiment_name"]
+
+if config_data["experiment_config"]["render_pose_trace"] == "true" or config_data["experiment_config"]["render_pose_trace"] == "True":
+	pose_flag = True
+else:
+	pose_flag = False
+
+if pose_flag:
+	pose_csv_path = config_data["experiment_config"]["path_of_MIV_pose_trace_file"]
+	subprocess.call(f'python ./camorph/main.py 1 {miv_json_path} {start_dir}/{exp_name}_poses.json \
+		  {num_of_views}  {pose_csv_path}', shell=True)
+	for F in range(1, num_of_original_frames+1):
+		os.system(f'cp {start_dir}/{exp_name}_poses.json  {start_dir}/frames/frame{F}')
+	
+	for F in range(1, num_of_original_frames+1):
+		f_ex_read = open(f"{start_dir}/frames/frame{F}/{exp_name}_poses.json", 'r')
+		data = json.load(f_ex_read)
+		f_ex_read.close()
+		data["frames"] = data["frames"][F-1:F]
+		f_ex_write = open(f"{start_dir}/frames/frame{F}/{exp_name}_poses.json", "w+")
+		json.dump(data, f_ex_write, ensure_ascii=False, indent='\t')
+		f_ex_write.close()
+
+	
+	ingp_home_dir = '.'
+	initial_n_iters = config_data["experiment_config"]["initial_n_iters"]
+	transfer_n_iters = config_data["experiment_config"]["transfer_learning_n_iters"]
+	frame_start = config_data["experiment_config"]["frame_start"]
+	frame_end = config_data["experiment_config"]["frame_end"]
+
+	accumulated_iter = initial_n_iters
+	os.system(f"mkdir {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter};")
+	os.system(f"python {ingp_home_dir}/scripts/run.py \
+		--scene {start_dir}/frames/frame{frame_start}/transforms.json \
+		--n_steps {accumulated_iter} \
+		--screenshot_transforms {start_dir}/frames/frame{frame_start}/{exp_name}_poses.json \
+		--screenshot_dir {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter} \
+		--save_snapshot {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter}/snapshot.msgpack \
+		> {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter}/log.txt ")
+
+	for F in range(frame_start+1, frame_end+1):
+		accumulated_iter += transfer_n_iters
+		os.system(f"mkdir {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter};")
+		os.system(f"python {ingp_home_dir}/scripts/run.py \
+			--scene {start_dir}/frames/frame{F}/transforms.json \
+			--load_snapshot {start_dir}/frames/frame{F-1}/result_{exp_name}_{accumulated_iter-transfer_n_iters}/snapshot.msgpack \
+			--n_steps {accumulated_iter} \
+			--screenshot_transforms {start_dir}/frames/frame{F}/{exp_name}_poses.json \
+			--screenshot_dir {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter} \
+			--save_snapshot {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter}/snapshot.msgpack \
+			> {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter}/log.txt ")
+
+
+	os.system(f"mkdir {start_dir}/Output_{exp_name};")
+	os.system(f"mkdir {start_dir}/Output_{exp_name}/temp")
+	for i in range(frame_start-1, frame_end):
+		os.system(f"cp {start_dir}/frames/frame{i+1}/result_{exp_name}_{initial_n_iters+(i*transfer_n_iters)}/posestrace_{str(i).zfill(3)}.png \
+	    {start_dir}/Output_{exp_name}/temp/posestrace_{str(i).zfill(3)}.png")
+	os.system(f"ffmpeg -framerate {input_frame_rate} -pattern_type glob \
+		-i '{start_dir}/Output_{exp_name}/temp/*.png' -c:v libx264 -pix_fmt yuv420p \
+		{start_dir}/Output_{exp_name}/poses_video.mp4 ")
+else:
+	pass
+
+
