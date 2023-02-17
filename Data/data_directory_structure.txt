@@ -3,12 +3,12 @@ This structure will be automatically generated.
 
 Data
 	| -- content1
-	|					| -- images
-	|					| -- frames
-	|					| -- Output_exp1
-	|					| -- Output_exp2
+	|		| -- images
+	|		| -- frames
+	|		| -- Output_exp1
+	|		| -- Output_exp2
 	| -- content2
-	|					| -- images
-	|					| -- frames
-	|					| -- Output_exp3
-	|					| -- Output_exp4
+	|		| -- images
+	|		| -- frames
+	|		| -- Output_exp3
+	|		| -- Output_exp4
