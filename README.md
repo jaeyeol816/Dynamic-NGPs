@@ -1,5 +1,7 @@
 # MIV-dynamic-NGP
 
+Beta Version. Not completed yet. 
+
 ## 1. Introduction
 
 This software is implemented based on [instant-NGP](https://github.com/NVlabs/instant-ngp) and [camorph](https://github.com/Fraunhofer-IIS/camorph).
