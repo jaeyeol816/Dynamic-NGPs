@@ -19,7 +19,7 @@ The overall time of data transforming, training, and rendering is about 1 hour f
 ## 2. Usage
 For now, this software is available only Linux or Windows WSL2. (not native Windows)
 
-### 2-1. Building
+## 2-1. Building
 **1. Pre requirements**
 - CUDA 10.2 or higher 
 	- [click here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/) for CUDA installation for linux
@@ -64,22 +64,23 @@ cmake --build build --config RelWithDebInfo -j
 ```
 - If you are running out of memory, try running the command without `-j`.
 - The command would take some time.
-- If the building error occured, the [issues from instant-ngp] will help.
+- If the building error occured, the [issues from instant-ngp](https://github.com/NVlabs/instant-ngp/issues?q=) will help.
 	- Although, the building step for this sortware is not identical to instant-ngp. The `CMakeLists.txt` in this project set to do not build GUI part of instant-ngp.
 
 
-### 2-2. Running
+## 2-2. Running
 
 In constrast to building step, the running step is quite simple.<br>
 To summrize, the only thing you have to do is (1) filling the `config.json` and (2) runnning python script as `python main.py`.
 
-**1. Filling config files**<br>
+**1. Filling config files**
+
 Fill out the `config.json` file to give information such as location of the yuv files and iteration time.<br>
 The term "content" is related to your `yuv` content. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
 - `content_name`: Any name can be set as content name.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
-	- WARNING: No depth file should be in this directory.
-	- WARNING: The file name should contain tring that show view info as `v2_` or `v02_` . Then the software will automatically detect your view number.
+	- WARNING: depth file should **NOT** be in this directory.
+	- WARNING: The file name should **contain string that show view info as `v2_` or `v02_`**. Then the software will automatically detect your view number.
 - `path_of_MIV_json_file`: the location of camera path json file like `A.json`, `S.json`
 - `experiment_config`: At each experiment, giving the suitable `experiment_name` is recommended.
 - `initial_n_iters`: The number of iterations of the first frame.
