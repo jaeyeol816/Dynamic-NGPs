@@ -39,7 +39,7 @@ dependencies:
   - mkl
   - mkl_fft
   - mkl_random
-  - munkre
+  - munkres
   - ncurses
   - numpy-base
   - openssl
