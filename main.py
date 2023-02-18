@@ -11,7 +11,7 @@ content_name = config_data["content_name"]
 start_dir = f"./Data/{content_name}"
 
 miv_json_path = config_data["path_of_MIV_json_file"]
-num_of_original_frames = 0		 # will be modified
+num_of_original_frames = 0		 # will be modified below. don't touch.
 
 input_frame_rate = config_data["input_frame_rate"]
 
