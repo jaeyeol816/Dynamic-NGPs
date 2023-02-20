@@ -46,7 +46,7 @@ cd miv-dynamic-NGP
 ```bash
 conda env create -f miv_ngp.yml
 ```
-- The command above helps you make the suitable python environment named `miv_ngp` for this software.
+- The command above helps you make the suitable anaconda environment named `miv_ngp` for this software.
 ```bash
 conda activate miv_ngp
 ```
@@ -68,7 +68,7 @@ cmake --build build --config RelWithDebInfo -j
 	- Although, the building step for this sortware is not identical to instant-ngp. The `CMakeLists.txt` in this project set to do not build GUI part of instant-ngp.
 
 
-## 2-2. Running
+## 2-2. Executing
 
 In constrast to building step, the running step is quite simple.<br>
 To summrize, the only thing you have to do is (1) filling the `config.json` and (2) runnning python script as `python main.py`.
@@ -102,6 +102,7 @@ python main.py
 	- Includes (1) converting yuv to png files, (2) converting camera parameter based on `MPEG OMAF` coordinate to `NeRF` coordinate, (3) making directories for each frame and change crucial information in json file, (4) training deep learning model, and (5) make video by concatenating test view files.
 - It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
 
+## 2-3. Seeing Results
 
 ---
 

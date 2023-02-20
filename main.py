@@ -2,6 +2,7 @@ import json
 import os
 from os import path
 import subprocess
+import copy
 
 f_config = open('./config.json', 'r')
 config_data = json.load(f_config)
@@ -15,9 +16,8 @@ num_of_original_frames = 0		 # will be modified below. don't touch.
 
 input_frame_rate = config_data["input_frame_rate"]
 
-if path.exists(f'{start_dir}/images'):
-	pass
-else:
+
+if not path.exists(f'{start_dir}/images'):
 	yuv_dir = config_data["path_of_dir_containing_only_texture_yuv"] 
 	input_video_size = config_data["input_video_width_height"]
 	input_frame_rate = config_data["input_frame_rate"]
@@ -93,6 +93,16 @@ else:
 
 exp_name = config_data["experiment_config"]["experiment_name"]
 
+frame_start = config_data["experiment_config"]["frame_start"]
+frame_end = config_data["experiment_config"]["frame_end"]
+if frame_start == 0:
+	print('frame_start cannot be 0 (frame_start >= 1)')
+	exit()
+if frame_start >= frame_end:
+	print('frame_start should be smaller than frame_end')
+	exit()
+
+
 if config_data["experiment_config"]["render_pose_trace"] == "true" or config_data["experiment_config"]["render_pose_trace"] == "True":
 	pose_flag = True
 else:
@@ -118,9 +128,8 @@ if pose_flag:
 	ingp_home_dir = '.'
 	initial_n_iters = config_data["experiment_config"]["initial_n_iters"]
 	transfer_n_iters = config_data["experiment_config"]["transfer_learning_n_iters"]
-	frame_start = config_data["experiment_config"]["frame_start"]
-	frame_end = config_data["experiment_config"]["frame_end"]
-
+	
+	print("Training Frame1 ...")
 	accumulated_iter = initial_n_iters
 	os.system(f"mkdir {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter};")
 	os.system(f"python {ingp_home_dir}/scripts/run.py \
@@ -132,6 +141,7 @@ if pose_flag:
 		> {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter}/log.txt ")
 
 	for F in range(frame_start+1, frame_end+1):
+		print(f"Training Frame{F} ...")
 		accumulated_iter += transfer_n_iters
 		os.system(f"mkdir {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter};")
 		os.system(f"python {ingp_home_dir}/scripts/run.py \
@@ -152,7 +162,66 @@ if pose_flag:
 	os.system(f"ffmpeg -framerate {input_frame_rate} -pattern_type glob \
 		-i '{start_dir}/Output_{exp_name}/temp/*.png' -c:v libx264 -pix_fmt yuv420p \
 		{start_dir}/Output_{exp_name}/poses_video.mp4 ")
+
 else:
-	pass
+	test_views = config_data["experiment_config"]["test_set_view"]
+	train_views = [i for i in range(view_start_idx, view_start_idx+num_of_views+1) if i not in test_views]
+	for F in range(frame_start, frame_end+1):
+		with open(f"{start_dir}/frames/frame{F}/transforms.json", "r") as f_orig:
+			orig = json.load(f_orig)
+			train = copy.deepcopy(orig)
+			test = copy.deepcopy(orig)
+			orig_frames = orig["frames"]
+			for i in reversed(range(len(orig_frames))):
+				if i not in train_views:
+					del(train["frames"][i])
+				if i not in test_views:
+					del(test["frames"][i])
+			f_train = open(f"{start_dir}/frames/frame{F}/{exp_name}_transforms_train..json", "w")
+			f_test = open(f"{start_dir}/frames/frame{F}/{exp_name}_transforms_test.json", "w")
+			json.dump(train, f_train, ensure_ascii=False, indent='\t')
+			json.dump(test, f_test, ensure_ascii=False, indent='\t')
+			f_train.close()
+			f_test.close()
+	
+	ingp_home_dir = '.'
+	initial_n_iters = config_data["experiment_config"]["initial_n_iters"]
+	transfer_n_iters = config_data["experiment_config"]["transfer_learning_n_iters"]
+	
+	print("Training Frame1 ...")
+	accumulated_iter = initial_n_iters
+	os.system(f"mkdir {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter};")
+	os.system(f"python {ingp_home_dir}/scripts/run.py \
+		--scene {start_dir}/frames/frame{frame_start}/{exp_name}_transforms_train.json \
+		--n_steps {accumulated_iter} \
+		--screenshot_transforms {start_dir}/frames/frame{frame_start}/{exp_name}_transforms_test.json \
+		--screenshot_dir {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter} \
+		--save_snapshot {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter}/snapshot.msgpack \
+		> {start_dir}/frames/frame{frame_start}/result_{exp_name}_{accumulated_iter}/log.txt ")
 
+	for F in range(frame_start+1, frame_end+1):
+		print(f"Training Frame{F} ...")
+		accumulated_iter += transfer_n_iters
+		os.system(f"mkdir {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter};")
+		os.system(f"python {ingp_home_dir}/scripts/run.py \
+			--scene {start_dir}/frames/frame{F}/{exp_name}_transforms_train.json \
+			--load_snapshot {start_dir}/frames/frame{F-1}/result_{exp_name}_{accumulated_iter-transfer_n_iters}/snapshot.msgpack \
+			--n_steps {accumulated_iter} \
+			--screenshot_transforms {start_dir}/frames/frame{F}/{exp_name}_transforms_test.json \
+			--screenshot_dir {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter} \
+			--save_snapshot {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter}/snapshot.msgpack \
+			> {start_dir}/frames/frame{F}/result_{exp_name}_{accumulated_iter}/log.txt ")
 
+	os.system(f"mkdir {start_dir}/Output_{exp_name};")
+	for V in test_views:
+		os.system(f"mkdir {start_dir}/Output_{exp_name}/temp_v{V}")
+	for V in test_views:
+		for i in range(frame_start, frame_end+1):
+			os.system(f"cp {start_dir}/frames/frame{i+1}/result_{exp_name}_{initial_n_iters+(i*transfer_n_iters)}/image-v{V}-f{str(F).zfill(3)}.png \
+				{start_dir}/Output_{exp_name}/tem_v{V}/image-v{V}-f{str(F).zfill(3)}.png")
+		os.system(f"ffmpeg -framerate {input_frame_rate} -pattern_type glob \
+		-i '{start_dir}/Output_{exp_name}/temp_v{V}/*.png' -c:v libx264 -pix_fmt yuv420p \
+		{start_dir}/{exp_name}_output/view{V}.mp4 ")
+	for V in test_views:
+		os.system(f"rm {start_dir}/Output_{exp_name}/temp_v{V}/*.png")
+		os.system(f"rm -r {start_dir}/Output_{exp_name}/temp_v{V}")
