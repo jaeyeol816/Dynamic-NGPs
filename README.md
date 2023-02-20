@@ -79,7 +79,7 @@ Fill out the `config.json` file to give information such as location of the yuv 
 The term "content" is related to your `yuv` content. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
 - `content_name`: Any name can be set as content name.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
-	- WARNING: depth file should **NOT** be in this directory.
+	- WARNING: depth file should NOT be in this directory.
 	- WARNING: The file name should **contain string that show view info as `v2_` or `v02_`**. Then the software will automatically detect your view number.
 - `path_of_MIV_json_file`: the location of camera path json file like `A.json`, `S.json`
 - `experiment_config`: At each experiment, giving the suitable `experiment_name` is recommended.
@@ -87,12 +87,12 @@ The term "content" is related to your `yuv` content. The one execution of the pr
 - `transfer_learning_n_iters`: The number of iterations of the second~last frame. For specific frame, the training is held using weights(parameter) of previous frame.
 - `frame_start`, `frame_end`: You can set how much frame you will train, render. 
 	- WARNING: The index of frame start at 1
-- **IMPORTANT:** `render_pose_trace`, `render_test_set`
+- IMPORTANT: `render_pose_trace`, `render_test_set`
 	- There are two options for rendering.
 	- First Option:  If you choose `"render_pose_trace": "true"`, then you will get the output video based on your pose trace file.
 		- The pose trace file should be MIV format.
 	- Second Option: If you choose `"render_test_set": "false"`, then you will get the output video rendered in specific viewing position.
-		- The `"test_set_view"` you selected will be **excluded** in training step. And it will become the rendering view position.
+		- The `"test_set_view"` you selected will be excluded in training step. And it will become the rendering view position.
 
 **2. Run python file**
 ```bash
