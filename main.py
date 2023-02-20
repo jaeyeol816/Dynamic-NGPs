@@ -221,7 +221,7 @@ else:
 				{start_dir}/Output_{exp_name}/tem_v{V}/image-v{V}-f{str(F).zfill(3)}.png")
 		os.system(f"ffmpeg -framerate {input_frame_rate} -pattern_type glob \
 		-i '{start_dir}/Output_{exp_name}/temp_v{V}/*.png' -c:v libx264 -pix_fmt yuv420p \
-		{start_dir}/{exp_name}_output/view{V}.mp4 ")
+		{start_dir}/Output_{exp_name}/view{V}.mp4 ")
 	for V in test_views:
 		os.system(f"rm {start_dir}/Output_{exp_name}/temp_v{V}/*.png")
 		os.system(f"rm -r {start_dir}/Output_{exp_name}/temp_v{V}")
