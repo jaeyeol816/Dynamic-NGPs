@@ -82,7 +82,7 @@ The term "content" is related to your `yuv` content. The one execution of the pr
 	- WARNING: depth file should NOT be in this directory.
 	- WARNING: The file name should **contain string that show view info as `v2_` or `v02_`**. Then the software will automatically detect your view number.
 - `path_of_MIV_json_file`: the location of camera path json file like `A.json`, `S.json`
-- `experiment_config`: At each experiment, giving the suitable `experiment_name` is recommended.
+- `experiment_config`: At each experiment, giving the independent `experiment_name` is recommended.
 - `initial_n_iters`: The number of iterations of the first frame.
 - `transfer_learning_n_iters`: The number of iterations of the second~last frame. For specific frame, the training is held using weights(parameter) of previous frame.
 - `frame_start`, `frame_end`: You can set how much frame you will train, render. 
