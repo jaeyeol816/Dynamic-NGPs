@@ -21,6 +21,7 @@ input_frame_rate = config_data["input_frame_rate"]
 
 if path.exists(f'{start_dir}/images'):
 	views_list = os.listdir(f'{start_dir}/images')	
+	views_list = [x for x in views_list if x[-3:]=='yuv']
 	views_list.sort()
 	if '_v0' in views_list[0]:
 		view_start_idx = 0
