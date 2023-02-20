@@ -1,12 +1,11 @@
 # MIV-dynamic-NGP
 
-Beta Version. Not completed yet. 
 
 ## 1. Introduction
 
 This software is implemented based on [instant-NGP](https://github.com/NVlabs/instant-ngp) and [camorph](https://github.com/Fraunhofer-IIS/camorph).
 
-Reconstruct your dynamic 3D scene by Neural Network Model!!<br>
+Represent 3D dynamic data implicitly on Neural Network model, and render the video based on your own pose trace.<br>
 By training  "[instant-NGP](https://github.com/NVlabs/instant-ngp)" model using transfer learning per frame, We provide temporal-consistent video with  relatively-high-speed.<br>
 For camera parameter and pose trace format, we adopted MPEG-Immersive-Video(MIV) standard.<br>
 - Input: Set of `.yuv` files, MIV-format camera parameter file, and (optionally) MIV-format pose trace file. (depth map is NOT required.)<br>
@@ -76,7 +75,7 @@ To summrize, the only thing you have to do is (1) filling the `config.json` and 
 **1. Filling config files**
 
 Fill out the `config.json` file to give information such as location of the yuv files and iteration time.<br>
-**IMPORTANT:** The term "content" is related to your content, in other word, your specific `yuv` file group. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
+The term "content" is related to your `yuv` content. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
 - `content_name`: Any name can be set as content name.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
 	- WARNING: depth file should **NOT** be in this directory.
@@ -98,11 +97,14 @@ Fill out the `config.json` file to give information such as location of the yuv 
 ```bash
 python main.py
 ```
-- All the step will be done auto~matically.
+- All the step will be done automatically.
 	- Includes (1) converting yuv to png files, (2) converting camera parameter based on `MPEG OMAF` coordinate to `NeRF` coordinate, (3) making directories for each frame and change crucial information in json file, (4) training deep learning model, and (5) make video by concatenating test view files.
 - It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
 
 **3. Seeing Results**
+- your output video will be generated in `Data/{content_name}/Output_{exp_name}`.
+	- If you selected 'pose trace render' mode, the name of the video will be `poses_video.mp4`.
+	- If you selected 'test set render' mode, the name of the video will be `view{view_number}.mp4`.
 
 ---
 
