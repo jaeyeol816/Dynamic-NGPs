@@ -76,7 +76,7 @@ To summrize, the only thing you have to do is (1) filling the `config.json` and 
 **1. Filling config files**
 
 Fill out the `config.json` file to give information such as location of the yuv files and iteration time.<br>
-The term "content" is related to your `yuv` content. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
+**IMPORTANT:** The term "content" is related to your content, in other word, your specific `yuv` file group. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
 - `content_name`: Any name can be set as content name.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
 	- WARNING: depth file should **NOT** be in this directory.
@@ -87,7 +87,7 @@ The term "content" is related to your `yuv` content. The one execution of the pr
 - `transfer_learning_n_iters`: The number of iterations of the second~last frame. For specific frame, the training is held using weights(parameter) of previous frame.
 - `frame_start`, `frame_end`: You can set how much frame you will train, render. 
 	- WARNING: The index of frame start at 1
-- **IMPORTANT)** `render_pose_trace`, `render_test_set`
+- **IMPORTANT:** `render_pose_trace`, `render_test_set`
 	- There are two options for rendering.
 	- First Option:  If you choose `"render_pose_trace": "true"`, then you will get the output video based on your pose trace file.
 		- The pose trace file should be MIV format.
@@ -102,7 +102,7 @@ python main.py
 	- Includes (1) converting yuv to png files, (2) converting camera parameter based on `MPEG OMAF` coordinate to `NeRF` coordinate, (3) making directories for each frame and change crucial information in json file, (4) training deep learning model, and (5) make video by concatenating test view files.
 - It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
 
-## 2-3. Seeing Results
+**3. Seeing Results**
 
 ---
 

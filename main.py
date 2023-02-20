@@ -12,12 +12,22 @@ content_name = config_data["content_name"]
 start_dir = f"./Data/{content_name}"
 
 miv_json_path = config_data["path_of_MIV_json_file"]
+
 num_of_original_frames = 0		 # will be modified below. don't touch.
+view_start_idx = 0		 # will be modified below. don't touch.
+num_of_views = 0			 # will be modified below. don't touch.
 
 input_frame_rate = config_data["input_frame_rate"]
 
-
-if not path.exists(f'{start_dir}/images'):
+if path.exists(f'{start_dir}/images'):
+	views_list = os.listdir(f'{start_dir}/images')	
+	views_list.sort()
+	if '_v0' in views_list[0]:
+		view_start_idx = 0
+	else:
+		view_start_idx = 1
+	num_of_views = len(views_list)
+else:
 	yuv_dir = config_data["path_of_dir_containing_only_texture_yuv"] 
 	input_video_size = config_data["input_video_width_height"]
 	input_frame_rate = config_data["input_frame_rate"]
@@ -62,6 +72,7 @@ if not path.exists(f'{start_dir}/images'):
 	tr_json = orig_tr_json
 	f_tr_json.close()
 	tr_json["aabb_scale"] = 64
+	tr_json["offset"] = [-1,-2,0]
 	translation_val_sample = \
 		( abs(tr_json["frames"][0]["transform_matrix"][0][3]) \
 			+ abs(tr_json["frames"][0]["transform_matrix"][1][3]) \
@@ -177,7 +188,7 @@ else:
 					del(train["frames"][i])
 				if i not in test_views:
 					del(test["frames"][i])
-			f_train = open(f"{start_dir}/frames/frame{F}/{exp_name}_transforms_train..json", "w")
+			f_train = open(f"{start_dir}/frames/frame{F}/{exp_name}_transforms_train.json", "w")
 			f_test = open(f"{start_dir}/frames/frame{F}/{exp_name}_transforms_test.json", "w")
 			json.dump(train, f_train, ensure_ascii=False, indent='\t')
 			json.dump(test, f_test, ensure_ascii=False, indent='\t')
