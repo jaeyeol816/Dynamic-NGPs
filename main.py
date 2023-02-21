@@ -73,7 +73,6 @@ else:
 	tr_json = orig_tr_json
 	f_tr_json.close()
 	tr_json["aabb_scale"] = 64
-	tr_json["offset"] = [-1,-2,0]
 	translation_val_sample = \
 		( abs(tr_json["frames"][0]["transform_matrix"][0][3]) \
 			+ abs(tr_json["frames"][0]["transform_matrix"][1][3]) \
