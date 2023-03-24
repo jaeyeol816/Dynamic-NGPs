@@ -43,6 +43,7 @@ dependencies:
   - ncurses
   - numpy-base
   - openssl
+  - pathlib
   - packaging
   - pcre
   - pyparsing
