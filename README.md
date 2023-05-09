@@ -2,6 +2,7 @@
 
 
 ## 1. Introduction
+![overview](https://user-images.githubusercontent.com/80497842/237037849-3c183b5e-ba8f-46fb-a4a2-a0f7a9d8a525.gif)
 
 Represent 3D dynamic data implicitly on Neural Network models, and render the video based on your own pose trace.<br>
 
@@ -107,8 +108,3 @@ python main.py
 	- If you selected 'pose trace render' mode, the name of the video will be `poses_video.mp4`.
 	- If you selected 'test set render' mode, the name of the video will be `view{view_number}.mp4`.
 
----
-
-## 3. Theory
-
-## 4. Implementation
