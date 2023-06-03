@@ -1,4 +1,4 @@
-# MIV-dynamic-NGP
+# Dynamic-NGPs
 
 
 ## 1. Introduction
