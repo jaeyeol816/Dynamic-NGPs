@@ -239,3 +239,5 @@ else:
 	for V in test_views:
 		os.system(f"sudo rm {result_dir}/Output_{exp_name}/temp_v{V}/*.png")
 		os.system(f"sudo rm -r {result_dir}/Output_{exp_name}/temp_v{V}")
+
+# test!!
