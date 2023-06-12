@@ -1,15 +1,1 @@
-This structure will be automatically generated. 
-(Don't need to worry. The only thing you have to do is to look at Output directory to "see" your video)
-
-Data
-	| -- content1
-	|		| -- images
-	|		| -- frames
-	|		| -- Output_exp1
-	|		| -- Output_exp2
-	| -- content2
-	|		| -- images
-	|		| -- frames
-	|		| -- Output_exp3
-	|		| -- Output_exp4
-	|		| -- Output_exp5
+The files in this directory will be automatically generated. 
