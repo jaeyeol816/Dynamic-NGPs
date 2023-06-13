@@ -1,5 +1,5 @@
 {
-	"train_exp_id": "fan_temp",
+	"train_exp_id": "fan_testview_temp",
 
 	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J04",
 	"path_of_MIV_json_file": "/data/jychoi/fan_backup/O.json",
@@ -10,12 +10,12 @@
 	"input_video_width_height": "1920x1080",
 	"input_frame_rate": 30,
 
-	"initial_n_iters": 1000,
-	"transfer_learning_n_iters":  500,
+	"initial_n_iters": 5000,
+	"transfer_learning_n_iters":  1000,
 
 	"frame_start": 1,
-	"frame_end": 2,
+	"frame_end": 3,
 
-	"exclude_specific_views": "false",
+	"exclude_specific_views": "true",
 	"views_to_exclude": [6, 8]
 }

@@ -3,6 +3,7 @@ import os
 from os import path
 import subprocess
 import copy
+import datetime
 
 f_config = open('./train_config.json', 'r')
 config_data = json.load(f_config)
@@ -20,9 +21,24 @@ frame_start = config_data["frame_start"]
 frame_end = config_data["frame_end"]
 ingp_home_dir = '.'
 
-# num_of_original_frames = 0		 # will be modified below. don't touch.
+
 view_start_idx = 0		 # will be modified below. don't touch.
 num_of_views = 0			 # will be modified below. don't touch.
+
+os.system(f'mkdir {result_dir}')
+os.system(f'mkdir {result_dir}/train_{train_id}')
+# 시작 시간을 로그 파일에 기록
+start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+with open(f"{result_dir}/train_{train_id}/log.txt", "w") as log_file:
+	log_file.write("DO NOT DELETE THIS LOG FILE !!\n\n")
+	log_file.write(f"[{start_time}] - Start!!\n")
+
+# 기본 세팅을 로그 파일에 기록
+with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+	log_file.write("\n")
+	for key, value in config_data.items():
+		log_file.write(f"{key}: {value}\n")
+
 
 # 에러 처리
 if frame_start <= 0:
@@ -45,6 +61,12 @@ if path.exists(f'{image_base_dir}/images'):
 		# 향후 에러 처리 코드 작성
 		pass
 	num_of_views = len(views_list)
+
+	# 로그 파일에 view 관련 정보 기록
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"view_start_idx: {view_start_idx}\n")
+		log_file.write(f"num_of_views: {num_of_views}\n")
+		log_file.write("\n")
 else:
 	yuv_dir = config_data["path_of_dir_containing_only_texture_yuv"] 
 	input_video_size = config_data["input_video_width_height"]
@@ -60,8 +82,19 @@ else:
 	else:
 		view_start_idx = 1
 	
+	# 로그 파일에 view 관련 정보 기록
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"view_start_idx: {view_start_idx}\n")
+		log_file.write(f"num_of_views: {num_of_views}\n")
+		log_file.write("\n")
+	
 	os.system(f'sudo mkdir {image_base_dir}')
 	os.system(f'sudo mkdir {image_base_dir}/images')
+
+	# 로그 파일에 동영상 변환 시작 시각 기록
+	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"[{time}] - Start converting yuv to png!!\n\n")
 
 	for V in range(view_start_idx, num_of_views + view_start_idx):
 		video_file = [x for x in video_file_list if f'v{V}_' in x or f'v0{V}_' in x]
@@ -73,17 +106,25 @@ else:
 		-f image2 -pix_fmt rgba \
 		{image_base_dir}/images/v{V}/image-v{V}-f%3d.png')
 
-# Step2. frames 디렉토리 생성후 카메라 파라미터 파일 변환하기
-# num_of_original_frames = len(os.listdir(f'{image_base_dir}/images/v{view_start_idx}'))
+	# 로그 파일에 동영상 변환 종료 시각 기록
+	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"[{time}] - Success converting yuv to png. Saved at {image_base_dir}/images/\n\n")
 
-os.system(f'mkdir {result_dir}')
-os.system(f'mkdir {result_dir}/train_{train_id}')
+
+# Step2. frames 디렉토리 생성후 카메라 파라미터 파일 변환하기
+
 os.system(f'mkdir {result_dir}/train_{train_id}/frames')
 for F in range(frame_start, frame_end + 1):
 	os.system(f'mkdir {result_dir}/train_{train_id}/frames/frame{F}')
 
 subprocess.call(f'python ./camorph/main.py 0 {miv_json_path} {result_dir}/train_{train_id}/transforms.json \
 		 {num_of_views} 0', shell=True)
+
+# 로그 파일에 카메라 파라미터 변환 시작 시각 기록
+time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+	log_file.write(f"[{time}] - Sucess converting camera parameter (OMAF->NeRF) {result_dir}/train_{train_id}/transforms.json\n\n")
 
 f_tr_json = open(f'{result_dir}/train_{train_id}/transforms.json', 'r')
 orig_tr_json = json.load(f_tr_json)
@@ -102,23 +143,20 @@ f_tr_write = open(f'{result_dir}/train_{train_id}/transforms.json', 'w+')
 json.dump(tr_json, f_tr_write, ensure_ascii=False, indent='\t')
 f_tr_write.close()
 
-# for F in range(frame_start, frame_end + 1):
-# 	os.system(f'sudo cp {result_dir}/train_{train_id}/transforms.json  {result_dir}/train_{train_id}/frames/frame{F}')
 
 f_fp_read = open(f'{result_dir}/train_{train_id}/transforms.json', 'r')
 orig = json.load(f_fp_read)
 f_fp_read.close()
-# os.system(f'sudo chmod 777 {result_dir}/train_{train_id}/frames/*')
 for F in range(frame_start, frame_end + 1):
 	new = orig
 	orig_frames = orig["frames"]
 	for j, data_frame in enumerate(orig_frames):
 		new["frames"][j]["file_path"] = \
 				f"{image_base_dir}/images/v{j+view_start_idx}/image-v{j+view_start_idx}-f{str(F).zfill(3)}.png"
-	# os.system(f'sudo chmod 777 {result_dir}/train_{train_id}/frames/frame{F}/*')
 	f_fp_write = open(f"{result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json", 'w+')
 	json.dump(new, f_fp_write, ensure_ascii=False, indent='\t')
 	f_fp_write.close()
+
 
 
 # Step3: 일부 view를 exclude하는 경우 관련 사항 처리
@@ -142,6 +180,11 @@ if config_data["exclude_specific_views"] == "true" or config_data["exclude_speci
 # Step4: Instant-NGP 실행 (train, 모델 저장)
 # 첫 프레임
 print(f"Training Frame{frame_start} ...")
+# 로그 파일에 시작 시간 기록
+time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+	log_file.write(f"[{time}] - Start training frame{frame_start}. Now accumulated iter: 0\n\n")
+
 accumulated_iter = initial_n_iters
 os.system(f"mkdir {result_dir}/train_{train_id}/models")
 os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{frame_start}")
@@ -150,10 +193,20 @@ os.system(f"python {ingp_home_dir}/scripts/run.py \
 		--n_steps {accumulated_iter} \
 		--save_snapshot {result_dir}/train_{train_id}/models/frame{frame_start}/frame{frame_start}.msgpack \
 		> {result_dir}/train_{train_id}/frames/frame{frame_start}/frame{frame_start}_log.txt ")
+# 로그 파일에 종료 시간 기록
+time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+	log_file.write(f"[{time}] - End training frame{frame_start}. Model saved at {result_dir}/train_{train_id}/models/frame{frame_start}/frame{frame_start}.msgpack\n\n")
+
 
 # 이후 프레임
 for F in range(frame_start + 1, frame_end + 1):
 	print(f"Training Frame{F} ...")
+	# 로그 파일에 시작 시간 기록
+	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"[{time}] - Start training frame{F}. Now accumulated iter: {accumulated_iter}\n\n")
+	
 	accumulated_iter += transfer_n_iters
 	os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{F}")
 	os.system(f"python {ingp_home_dir}/scripts/run.py \
@@ -162,4 +215,13 @@ for F in range(frame_start + 1, frame_end + 1):
 		--n_steps {accumulated_iter} \
 		--save_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
 		> {result_dir}/train_{train_id}/frames/frame{F}/frame{F}_log.txt ")
+	# 로그 파일에 종료 시각 기록
+	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+		log_file.write(f"[{time}] - End training frame{F}. Model saved at {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack\n\n")
 
+# 로그 파일에 전체 종료 시각 기록
+time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
+	log_file.write(f"[{time}] - Success on training frame{frame_start} to frame{frame_end}\n\n")
+	log_file.write(f"You can now render 6DoF video by running render.py\n\n")
