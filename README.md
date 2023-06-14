@@ -49,20 +49,20 @@ For now, this software is available only on Linux or Windows WSL2. (not native W
 
 **2. Cloning the repository**
 ```bash
-git clone --recursive https://github.com/jaeyeol816/miv-dynamic-NGP.git
-cd miv-dynamic-NGP
+git clone --recursive https://github.com/jaeyeol816/Dynamic-NGP.git
+cd Dynamic-NGP
 ```
 - WARNING: Don't forget to include `--recursive` option when cloning.
 
 **3. Create and activate anaconda environment**
 ```bash
-conda env create -f miv_ngp.yml
+conda env create -f dy_ngp.yml
 ```
 - The command above helps you make the suitable anaconda environment named `miv_ngp` for this software.
 ```bash
-conda activate miv_ngp
+conda activate dy_ngp
 ```
-- Activate the `miv_ngp` environment.
+- Activate the `dy_ngp` environment.
 
 **4. Installing the packages**
 ```bash
