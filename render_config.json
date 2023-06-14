@@ -1,16 +1,16 @@
 {
-	"train_exp_id": "fan_testview_temp",
-	"render_exp_id": "v6v9",
+	"train_exp_id": "sample",
+	"render_exp_id": "p01",
 
 	"result_dir": "./results",
 
 	"frame_start": 1,
-	"frame_end": 3,
+	"frame_end": 10,
 
-	"render_pose_trace": "false",
-	"path_of_MIV_pose_trace_file": "/data/jychoi/fan_backup/Op01.csv",
+	"render_pose_trace": "true",
+	"path_of_MIV_pose_trace_file": "path/of/miv-format-pose-trace-file.csv",
 
-	"render_test_set": "true",
+	"render_test_set": "false",
 	"test_set_view": [6, 8]
 
 }
