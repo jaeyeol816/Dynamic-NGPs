@@ -16,11 +16,21 @@ For camera parameter and pose trace format, we adopted MPEG-Immersive-Video(MIV)
 The overall time of data transforming, training, and rendering is about 1 hour for 90 frames. 
 
 ---
+## 2. Architecture
+![Screenshot 2023-06-14 at 4 11 14 PM](https://github.com/jaeyeol816/Dynamic-NGPs/assets/80497842/ffd2c306-c26f-4ebc-bda5-6ae1155e2f8c)
 
-## 2. Usage
+- All process shown above are implemented to two scripts, `train.py` and `render.py`. 
+- You train the dynamic scene with `python train.py`. The conditions you need to give (e.g. location of video files, or iterations settings) should be entered on `train_config.json`
+- After you train the models, you can render the video anytime you want by running `python render.py`. The conditions you need to give (e.g. which models you will use, or the pose trace you want to render) should be entered on `test_config.json`
+
+> The concrete explaination is written below.
+---
+
+## 3. Usage
 For now, this software is available only on Linux or Windows WSL2. (not native Windows)
+**The document written below is deprecated. It will be updated**
 
-## 2-1. Building
+## 3-1. Building
 **1. Pre requirements**
 - CUDA 10.2 or higher 
 	- [click here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/) for CUDA installation for linux
@@ -69,7 +79,7 @@ cmake --build build --config RelWithDebInfo -j
 	- Although, the building step for this sortware is not identical to instant-ngp. The `CMakeLists.txt` in this project set to do not build GUI part of instant-ngp.
 
 
-## 2-2. Executing
+## 3-2. Executing
 
 In constrast to building step, the running step is quite simple.<br>
 To summrize, the only thing you have to do is (1) filling the `config.json` and (2) runnning python script as `python main.py`.
