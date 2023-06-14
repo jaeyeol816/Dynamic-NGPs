@@ -17,13 +17,14 @@ The overall time of data transforming, training, and rendering is about 1 hour f
 
 ---
 ## 2. Architecture
-![Screenshot 2023-06-14 at 4 11 14 PM](https://github.com/jaeyeol816/Dynamic-NGPs/assets/80497842/ffd2c306-c26f-4ebc-bda5-6ae1155e2f8c)
+![Screenshot 2023-06-14 at 4 18 32 PM](https://github.com/jaeyeol816/Dynamic-NGPs/assets/80497842/f66af57b-2509-4fdb-86e2-6754589ee9ea)
 
-- All process shown above are implemented to two scripts, `train.py` and `render.py`. 
+- All process shown above are implemented as two scripts, `train.py` and `render.py`. 
 - You train the dynamic scene with `python train.py`. The conditions you need to give (e.g. location of video files, or iterations settings) should be entered on `train_config.json`
 - After you train the models, you can render the video anytime you want by running `python render.py`. The conditions you need to give (e.g. which models you will use, or the pose trace you want to render) should be entered on `test_config.json`
+> Some features are not implemented yet (e.g. using colmap). It will be updated soon.
 
-> The concrete explaination is written below.
+- The concrete explaination is written below.
 ---
 
 ## 3. Usage
@@ -79,39 +80,43 @@ cmake --build build --config RelWithDebInfo -j
 	- Although, the building step for this sortware is not identical to instant-ngp. The `CMakeLists.txt` in this project set to do not build GUI part of instant-ngp.
 
 
-## 3-2. Executing
+## 3-2. Training
 
 In constrast to building step, the running step is quite simple.<br>
-To summrize, the only thing you have to do is (1) filling the `config.json` and (2) runnning python script as `python main.py`.
+To summerize, the only thing you have to do is (1) filling the `train_config.json` and (2) runnning python script as `python train.py`.
 
 **1. Fill config file**
 
-Fill out the `config.json` file to give information such as location of the yuv files and iteration time.<br>
-The term "content" is related to your `yuv` content. The one execution of the program means one "experiment". The multiple "experiment" can be done with one "content".
-- `content_name`: Any name can be set as content name.
+Fill out the `train_config.json` file to give information such as location of the yuv files and iteration time.<br>
+The term `train_id` means a "training experiment". The multiple "rendering experiment" can be done with one training experiment
+- `train_id`: Any name can be set to represent specific traininig experiment.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
 	- WARNING: depth file should NOT be in this directory.
 	- WARNING: The file name should **contain string that show view info as `v2_` or `v02_`**. Then the software will automatically detect your view number.
 - `path_of_MIV_json_file`: the location of camera path json file like `A.json`, `S.json`
-- `experiment_config`: At each experiment, giving the independent `experiment_name` is recommended.
+- `image_base_dir`: The location where we will store the converted `png` files. **If they already exist, we will not convert.**
 - `initial_n_iters`: The number of iterations of the first frame.
 - `transfer_learning_n_iters`: The number of iterations of the second~last frame. For specific frame, the training is held using weights(parameter) of previous frame.
-- `frame_start`, `frame_end`: You can set how much frame you will train, render. 
-	- WARNING: The index of frame start at 1
+- `frame_start`, `frame_end`: You can set how much frame you will train.
+- `exclude_specific_views`: if "true", then we will not train Instant-NGP with the views which you designate in `views_to_exclude`
+
+**2. Run python file**
+```bash
+python train.py
+```
+- All the step will be done automatically.
+- It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
+
+**3. Location of models and log files**
+
+## 3-3. Rendering (Creating a video)
+
 - IMPORTANT: `render_pose_trace`, `render_test_set`
 	- There are two options for rendering.
 	- First Option:  If you choose `"render_pose_trace": "true"`, then you will get the output video based on your pose trace file.
 		- The pose trace file should be MIV format.
 	- Second Option: If you choose `"render_test_set": "false"`, then you will get the output video rendered in specific viewing position.
 		- The `"test_set_view"` you selected will be excluded in training step. And it will become the rendering view position.
-
-**2. Run python file**
-```bash
-python main.py
-```
-- All the step will be done automatically.
-	- Includes (1) converting yuv to png files, (2) converting camera parameter based on `MPEG OMAF` coordinate to `NeRF` coordinate, (3) making directories for each frame and change crucial information in json file, (4) training deep learning model, and (5) make video by concatenating test view files.
-- It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
 
 **3. See Results**
 - your output video will be generated in `Data/{content_name}/Output_{exp_name}`.
