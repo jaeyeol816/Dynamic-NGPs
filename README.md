@@ -28,8 +28,7 @@ The overall time of data transforming, training, and rendering is about 1 hour f
 ---
 
 ## 3. Usage
-For now, this software is available only on Linux or Windows WSL2. (not native Windows)
-**The document written below is deprecated. It will be updated**
+For now, this software is available only on Linux or WSL2. (not native Windows)
 
 ## 3-1. Building
 **1. Pre requirements**
