@@ -89,7 +89,7 @@ To summerize, the only thing you have to do is (1) filling the `train_config.jso
 
 Fill out the `train_config.json` file to give information such as location of the yuv files and iteration time.<br>
 The term `train_id` means a "training experiment". The multiple "rendering experiment" can be done with one training experiment
-- `train_id`: Any name can be set to represent specific traininig experiment.
+- `train_exp_id`: Any name can be set to represent specific traininig experiment.
 - `path_of_dir_containing_only_texture_yuv`: The path of Folder that contains bunch of yuv files.
 	- WARNING: depth file should NOT be in this directory.
 	- WARNING: The file name should **contain string that show view info as `v2_` or `v02_`**. Then the software will automatically detect your view number.
@@ -108,18 +108,35 @@ python train.py
 - It will take some time (depending on `transfer_learning_n_iters` and num of frames). Take some coffee, or have dinner.
 
 **3. Location of models and log files**
+- The location of the models: `{result_dir}/train_{train_id}/render_{render_id}/models`
+- The location of the log file: `{result_dir}/train_{train_id}/log.txt`
+	- the time info and training info are written in log file
+- you should not delete model and log file, because it will be used in rendering process.
+
 
 ## 3-3. Rendering (Creating a video)
 
+The rendering experiment is subordinated to training experiemnt. 
+To summerize, the only thing you have to do is (1) filling the `render_config.json` and (2) runnning python script as `python render.py`.
+
+**1. Fill config file**
+- `train_exp_id`: Specifying the trained model you want to render.
+- `render_exp_id`: Any name that represents this rendering experiment. The many rendering experiemnt is available on one training experiment.
+  
+- `result_dir`: It should be same as `result_dir` of your training case (the training experiment that `train_exp_id` points)
+- `frame_start`, `frame_end`: The frames you want to render. It should be subset of the frames you trained.
+
 - IMPORTANT: `render_pose_trace`, `render_test_set`
 	- There are two options for rendering.
-	- First Option:  If you choose `"render_pose_trace": "true"`, then you will get the output video based on your pose trace file.
-		- The pose trace file should be MIV format.
-	- Second Option: If you choose `"render_test_set": "false"`, then you will get the output video rendered in specific viewing position.
-		- The `"test_set_view"` you selected will be excluded in training step. And it will become the rendering view position.
+	- First Option:  If you choose `"render_pose_trace": "true"`, then you will get the output video based on your pose trace file. (which should be located in `path_of_MIV_pose_trace_file`)
+		- For now, the pose trace file should be MIV format.
+	- Second Option: If you choose `"render_test_set": "true"`, then you will get the output video rendered in specific viewing position. (fill in `test_set_view`)
+
+**2. Run python file**
+```bash
+python render.py
+```
 
 **3. See Results**
-- your output video will be generated in `Data/{content_name}/Output_{exp_name}`.
-	- If you selected 'pose trace render' mode, the name of the video will be `poses_video.mp4`.
-	- If you selected 'test set render' mode, the name of the video will be `view{view_number}.mp4`.
-
+- Your output video will be generated in `{result_dir}/train_{train_id}/render_{render_id}/{poses_video or viewN}.mp4`
+- The rendering log is located in `{result_dir}/train_{train_id}/render_{render_id}/log.txt`
