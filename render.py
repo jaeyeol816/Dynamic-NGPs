@@ -134,6 +134,7 @@ if pose_render_flag:
 			accumulated_iter += transfer_n_iters
 		os.system(f'mkdir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/poses_outputs')
 		os.system(f'python {ingp_home_dir}/scripts/run.py \
+	    --network {ingp_home_dir}/configs/nerf/dyngp_render.json \
 			--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
 			--n_steps {accumulated_iter} \
 			--load_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
@@ -158,6 +159,7 @@ if test_render_flag:
 			accumulated_iter += transfer_n_iters
 		os.system(f'mkdir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/testview_outputs')
 		os.system(f'python {ingp_home_dir}/scripts/run.py \
+	    --network {ingp_home_dir}/configs/nerf/dyngp_render.json \
 			--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
 			--n_steps {accumulated_iter} \
 			--load_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \

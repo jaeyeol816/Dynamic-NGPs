@@ -1,14 +1,14 @@
 {
-	"train_exp_id": "sample",
+	"train_exp_id": "f_p_d_test",
 	"render_exp_id": "p01",
 
 	"result_dir": "./results",
 
 	"frame_start": 1,
-	"frame_end": 10,
+	"frame_end": 35,
 
 	"render_pose_trace": "true",
-	"path_of_MIV_pose_trace_file": "path/of/miv-format-pose-trace-file.csv",
+	"path_of_MIV_pose_trace_file": "./Data/Op01.csv",
 
 	"render_test_set": "false",
 	"test_set_view": [6, 8]

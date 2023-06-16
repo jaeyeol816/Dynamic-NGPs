@@ -189,6 +189,7 @@ accumulated_iter = initial_n_iters
 os.system(f"mkdir {result_dir}/train_{train_id}/models")
 os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{frame_start}")
 os.system(f"python {ingp_home_dir}/scripts/run.py \
+	  --network {ingp_home_dir}/configs/nerf/dyngp_initial.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{frame_start}/transforms_train.json \
 		--n_steps {accumulated_iter} \
 		--save_snapshot {result_dir}/train_{train_id}/models/frame{frame_start}/frame{frame_start}.msgpack \
@@ -210,6 +211,7 @@ for F in range(frame_start + 1, frame_end + 1):
 	accumulated_iter += transfer_n_iters
 	os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{F}")
 	os.system(f"python {ingp_home_dir}/scripts/run.py \
+	  --network {ingp_home_dir}/configs/nerf/dyngp_transfer.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
 		--load_snapshot {result_dir}/train_{train_id}/models/frame{F-1}/frame{F-1}.msgpack \
 		--n_steps {accumulated_iter} \

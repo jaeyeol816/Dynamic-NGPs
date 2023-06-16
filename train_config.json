@@ -1,20 +1,20 @@
 {
-	"train_exp_id": "sample",
+	"train_exp_id": "f_p_d_test",
 
-	"path_of_dir_containing_only_texture_yuv": "path/of/directory/where/it/has/yuv/files",
-	"path_of_MIV_json_file": "/path/of/directory/where/it/has/json/file",
+	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J04",
+	"path_of_MIV_json_file": "./Data/O.json",
 
-	"images_base_dir": "path/of/directory/where/you/will/place/converted/png/files",
+	"images_base_dir": "/data/jychoi/fan",
 	"result_dir": "./results",
 
 	"input_video_width_height": "1920x1080",
 	"input_frame_rate": 30,
 
 	"initial_n_iters": 10000,
-	"transfer_learning_n_iters": 2000,
+	"transfer_learning_n_iters": 1500,
 
 	"frame_start": 1,
-	"frame_end": 10,
+	"frame_end": 35,
 
 	"exclude_specific_views": "false",
 	"views_to_exclude": [6, 8]

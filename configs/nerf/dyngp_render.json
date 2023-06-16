@@ -1,0 +1,13 @@
+{
+	"parent": "base.json",
+	"optimizer": {
+		"nested": {
+			"nested": {
+				"learning_rate": 0
+			}
+		}
+	},
+	"encoding": {
+		"log2_hashmap_size": 14
+	}
+}
