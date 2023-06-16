@@ -84,5 +84,5 @@ dependencies:
     - pyquaternion
     - scipy
     - tqdm
-prefix: /usr/local/anaconda3/envs/miv_ngp
+prefix: /usr/local/anaconda3/envs/dy_ngp
 
