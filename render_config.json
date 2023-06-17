@@ -1,16 +1,16 @@
 {
-	"train_exp_id": "f_p_d_test",
-	"render_exp_id": "p01",
+	"train_exp_id": "f_t_d_10000_1500",
+	"render_exp_id": "v6v8",
 
 	"result_dir": "./results",
 
 	"frame_start": 1,
-	"frame_end": 35,
+	"frame_end": 97,
 
-	"render_pose_trace": "true",
+	"render_pose_trace": "false",
 	"path_of_MIV_pose_trace_file": "./Data/Op01.csv",
 
-	"render_test_set": "false",
+	"render_test_set": "true",
 	"test_set_view": [6, 8]
 
 }

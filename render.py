@@ -136,9 +136,8 @@ if pose_render_flag:
 		os.system(f'python {ingp_home_dir}/scripts/run.py \
 	    --network {ingp_home_dir}/configs/nerf/dyngp_render.json \
 			--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
-			--n_steps {accumulated_iter} \
+			--n_steps 0 \
 			--load_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
-			--n_steps {accumulated_iter} \
 			--screenshot_transforms {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/transforms_poses.json \
 			--screenshot_dir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/poses_outputs \
 			> {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/frame{F}_log.txt ')
@@ -161,9 +160,8 @@ if test_render_flag:
 		os.system(f'python {ingp_home_dir}/scripts/run.py \
 	    --network {ingp_home_dir}/configs/nerf/dyngp_render.json \
 			--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
-			--n_steps {accumulated_iter} \
+			--n_steps 0 \
 			--load_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
-			--n_steps {accumulated_iter} \
 			--screenshot_transforms {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/transforms_test.json \
 			--screenshot_dir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/testview_outputs \
 			> {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/frame{F}_log.txt ')
