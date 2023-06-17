@@ -1,5 +1,5 @@
 {
-	"train_exp_id": "f_t_d_10000_1500",
+	"train_exp_id": "f_t_d_50000_1500",
 
 	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J04",
 	"path_of_MIV_json_file": "./Data/O.json",
@@ -17,5 +17,7 @@
 	"frame_end": 97,
 
 	"exclude_specific_views": "true",
-	"views_to_exclude": [6, 8]
+	"views_to_exclude": [6, 8],
+
+	"cuda_device_nums": [0]
 }

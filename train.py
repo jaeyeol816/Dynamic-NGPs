@@ -19,6 +19,7 @@ initial_n_iters = config_data["initial_n_iters"]
 transfer_n_iters = config_data["transfer_learning_n_iters"]
 frame_start = config_data["frame_start"]
 frame_end = config_data["frame_end"]
+cuda_device_nums = config_data["cuda_device_nums"]
 ingp_home_dir = '.'
 
 
@@ -188,7 +189,8 @@ with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
 accumulated_iter = initial_n_iters
 os.system(f"mkdir {result_dir}/train_{train_id}/models")
 os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{frame_start}")
-os.system(f"python {ingp_home_dir}/scripts/run.py \
+os.system(f"CUDA_VISIBLE_DEVICES={cuda_device_nums[0]} \
+	  python {ingp_home_dir}/scripts/run.py \
 	  --network {ingp_home_dir}/configs/nerf/dyngp_initial.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{frame_start}/transforms_train.json \
 		--n_steps {accumulated_iter} \
@@ -210,7 +212,8 @@ for F in range(frame_start + 1, frame_end + 1):
 	
 	accumulated_iter += transfer_n_iters
 	os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{F}")
-	os.system(f"python {ingp_home_dir}/scripts/run.py \
+	os.system(f"CUDA_VISIBLE_DEVICES={cuda_device_nums[0]} \
+	  python {ingp_home_dir}/scripts/run.py \
 	  --network {ingp_home_dir}/configs/nerf/dyngp_transfer.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
 		--load_snapshot {result_dir}/train_{train_id}/models/frame{F-1}/frame{F-1}.msgpack \
