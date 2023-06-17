@@ -7,6 +7,6 @@
 		}
 	},
 	"encoding": {
-		"log2_hashmap_size": 14
+		"log2_hashmap_size": 18
 	}
 }

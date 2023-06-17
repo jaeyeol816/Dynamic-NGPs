@@ -1,5 +1,5 @@
 {
-	"train_exp_id": "f_t_d_50000_1500",
+	"train_exp_id": "f_t_t18_10000_2000",
 
 	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J04",
 	"path_of_MIV_json_file": "./Data/O.json",
@@ -11,7 +11,7 @@
 	"input_frame_rate": 30,
 
 	"initial_n_iters": 10000,
-	"transfer_learning_n_iters": 1500,
+	"transfer_learning_n_iters": 2000,
 
 	"frame_start": 1,
 	"frame_end": 97,
