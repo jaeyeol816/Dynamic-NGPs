@@ -59,6 +59,8 @@ if __name__ == "__main__":
 	result_dir = config_data["result_dir"]
 	frame_start = config_data["frame_start"]
 	frame_end = config_data["frame_end"]
+	cuda_devices = config_data["cuda_device_nums"]
+
 	ingp_home_dir = '.'
 
 
@@ -176,38 +178,15 @@ if __name__ == "__main__":
 		pool.close()
 		pool.join()
 	if test_render_flag:
-		pool = multiprocessing.Pool(processes=3)
+		pool = multiprocessing.Pool(processes=len(cuda_devices))
 		accumulated_iter = initial_n_iters if frame_start == 0 else 0
 		for i, F in enumerate(range(frame_start, frame_end + 1)):
 			if F != frame_start:
 					accumulated_iter += transfer_n_iters
-			process_id = i % 3 # 프로세스 ID 설정. 순환적으로 0, 1, 2가 됩니다.
-			pool.apply_async(render_frame_testview, (F, accumulated_iter, result_dir, train_id, render_id, ingp_home_dir, render_log_file, initial_n_iters, transfer_n_iters, test_render_views, process_id))
+			process_id = i %  len(cuda_devices)
+			pool.apply_async(render_frame_testview, (F, accumulated_iter, result_dir, train_id, render_id, ingp_home_dir, render_log_file, initial_n_iters, transfer_n_iters, test_render_views, cuda_devices[process_id]))
 		pool.close()
 		pool.join()
-		# for F in range(frame_start, frame_end + 1):
-		# 	print(f"Rendering Frame{F} ...")
-		# 	#로그 파일에 시작 시간 기록
-		# 	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-		# 	with open(render_log_file, "a")	as log_file:
-		# 		log_file.write(f"[{time}] - Start rendering frame{F}. (for test view {test_render_views}) \n\n")
-		# 	if F == frame_start:
-		# 		accumulated_iter = initial_n_iters
-		# 	else:
-		# 		accumulated_iter += transfer_n_iters
-		# 	os.system(f'mkdir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/testview_outputs')
-		# 	os.system(f'python {ingp_home_dir}/scripts/run.py \
-		# 		--network {ingp_home_dir}/configs/nerf/dyngp_render.json \
-		# 		--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
-		# 		--n_steps 0 \
-		# 		--load_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
-		# 		--screenshot_transforms {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/transforms_test.json \
-		# 		--screenshot_dir {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/testview_outputs \
-		# 		> {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/frame{F}_log.txt ')
-		# 	# 로그 파일에 종료 시각 기록
-		# 	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-		# 	with open(render_log_file, "a")	as log_file:
-		# 		log_file.write(f"[{time}] - Finish rendering frame{F}. (png saved at {result_dir}/train_{train_id}/render_{render_id}/temp/frame{F}/testview_outputs) \n\n")
 
 	# Step4. 동영상으로 취합
 	if pose_render_flag:

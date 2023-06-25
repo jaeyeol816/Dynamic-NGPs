@@ -6,9 +6,9 @@ import pandas as pd
 import datetime
 from datetime import datetime
 
-train_log_file = "/data/jychoi/results/train_f_t_t10_10000_2000/log.txt"
-model_base_dir = '/data/jychoi/results/train_f_t_t10_10000_2000/models'
-render_log_file = "/data/jychoi/results/train_f_t_t10_10000_2000/render_v6v8/log.txt"
+train_log_file = "/data/jychoi/results/train_c_s_1500_1500/log.txt"
+model_base_dir = '/data/jychoi/results/train_c_s_1500_1500/models'
+render_log_file = "/data/jychoi/results/train_c_s_1500_1500/render_v6v8/log.txt"
 result_base_dir = "/data/jychoi/results"
 
 

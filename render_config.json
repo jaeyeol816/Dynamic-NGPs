@@ -1,5 +1,5 @@
 {
-	"train_exp_id": "f_t_t18_10000_2000",
+	"train_exp_id": "c_wt_1500_1500",
 	"render_exp_id": "v6v8",
 
 	"result_dir": "./results",
@@ -8,7 +8,7 @@
 	"frame_end": 97,
 
 	"render_pose_trace": "false",
-	"path_of_MIV_pose_trace_file": "./Data/Op01.csv",
+	"path_of_MIV_pose_trace_file": "./Data/Sp01.csv",
 
 	"render_test_set": "true",
 	"test_set_view": [6, 8],

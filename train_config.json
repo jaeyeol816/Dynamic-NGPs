@@ -1,17 +1,17 @@
 {
-	"train_exp_id": "f_t_t18_10000_2000",
+	"train_exp_id": "c_wt_1500_1500",
 
-	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J04",
-	"path_of_MIV_json_file": "./Data/O.json",
+	"path_of_dir_containing_only_texture_yuv": "/data/mcsl/TestSequence/6DoF/J02",
+	"path_of_MIV_json_file": "./Data/G.json",
 
-	"images_base_dir": "/data/jychoi/fan",
+	"images_base_dir": "/data/jychoi/cadillac",
 	"result_dir": "./results",
 
 	"input_video_width_height": "1920x1080",
 	"input_frame_rate": 30,
 
-	"initial_n_iters": 10000,
-	"transfer_learning_n_iters": 2000,
+	"initial_n_iters": 1500,
+	"transfer_learning_n_iters": 1500,
 
 	"frame_start": 1,
 	"frame_end": 97,

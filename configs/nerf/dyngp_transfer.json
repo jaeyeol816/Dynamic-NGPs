@@ -2,11 +2,11 @@
 	"parent": "base.json",
 	"optimizer": {
 		"nested": {
-			"decay_start": 500,
+			"decay_start": 0,
 			"decay_interval": 100
 		}
 	},
 	"encoding": {
-		"log2_hashmap_size": 18
+		"log2_hashmap_size": 16
 	}
 }

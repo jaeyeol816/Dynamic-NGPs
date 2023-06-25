@@ -186,14 +186,13 @@ time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
 	log_file.write(f"[{time}] - Start training frame{frame_start}. Now accumulated iter: 0\n\n")
 
-accumulated_iter = initial_n_iters
 os.system(f"mkdir {result_dir}/train_{train_id}/models")
 os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{frame_start}")
 os.system(f"CUDA_VISIBLE_DEVICES={cuda_device_nums[0]} \
 	  python {ingp_home_dir}/scripts/run.py \
 	  --network {ingp_home_dir}/configs/nerf/dyngp_initial.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{frame_start}/transforms_train.json \
-		--n_steps {accumulated_iter} \
+		--n_steps {initial_n_iters} \
 		--save_snapshot {result_dir}/train_{train_id}/models/frame{frame_start}/frame{frame_start}.msgpack \
 		> {result_dir}/train_{train_id}/frames/frame{frame_start}/frame{frame_start}_log.txt ")
 # 로그 파일에 종료 시간 기록
@@ -208,16 +207,13 @@ for F in range(frame_start + 1, frame_end + 1):
 	# 로그 파일에 시작 시간 기록
 	time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 	with open(f"{result_dir}/train_{train_id}/log.txt", "a") as log_file:
-		log_file.write(f"[{time}] - Start training frame{F}. Now accumulated iter: {accumulated_iter}\n\n")
+		log_file.write(f"[{time}] - Start training frame{F}.\n\n")
 	
-	accumulated_iter += transfer_n_iters
 	os.system(f"mkdir {result_dir}/train_{train_id}/models/frame{F}")
 	os.system(f"CUDA_VISIBLE_DEVICES={cuda_device_nums[0]} \
 	  python {ingp_home_dir}/scripts/run.py \
-	  --network {ingp_home_dir}/configs/nerf/dyngp_transfer.json \
 		--scene {result_dir}/train_{train_id}/frames/frame{F}/transforms_train.json \
-		--load_snapshot {result_dir}/train_{train_id}/models/frame{F-1}/frame{F-1}.msgpack \
-		--n_steps {accumulated_iter} \
+		--n_steps {initial_n_iters} \
 		--save_snapshot {result_dir}/train_{train_id}/models/frame{F}/frame{F}.msgpack \
 		> {result_dir}/train_{train_id}/frames/frame{F}/frame{F}_log.txt ")
 	# 로그 파일에 종료 시각 기록
