@@ -2,10 +2,12 @@
 	"train_exp_id": "sample",
 
 	"path_of_dir_containing_only_texture_yuv": "path/of/directory/where/it/has/yuv/files",
-	"path_of_MIV_json_file": "/path/of/directory/where/it/has/json/file",
+	"use_transforms_json": "false",
+	"path_of_transforms_json": "path/of/transforms/json/file",
+	"path_of_MIV_json_file": "path/of/directory/where/it/has/yuv/files",
 
-	"images_base_dir": "path/of/directory/where/you/will/place/converted/png/files",
-	"result_dir": "./results",
+	"images_base_dir": "/data/jychoi/SKKU_VRroom2d",
+	"result_dir": "./m_ingp_results",
 
 	"input_video_width_height": "1920x1080",
 	"input_frame_rate": 30,
@@ -14,8 +16,10 @@
 	"transfer_learning_n_iters": 2000,
 
 	"frame_start": 1,
-	"frame_end": 10,
+	"frame_end": 100,
 
-	"exclude_specific_views": "false",
-	"views_to_exclude": [6, 8]
+	"exclude_specific_views": "true",
+	"views_to_exclude": [14],
+
+	"cuda_device_nums": [2]
 }
