@@ -5,7 +5,7 @@
  @article{Jaey2023DNGP,
     author    = {Choi, Jaeyeol and Jeong, Jong-Beom and Park, JunHyeong and Ryu, Eun-Seok},
     title     = {A Deep Learning-based 6DoF Video Synthesizing Method Using Instant-NGPs},
-    journal   = {2023 IEEE Visual Communications and Image Processing (VCIP)},
+    booktitle   = {2023 IEEE Visual Communications and Image Processing (VCIP)},
     year      = {2023},
     }
 ```
