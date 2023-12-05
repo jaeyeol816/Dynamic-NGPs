@@ -6,7 +6,7 @@
 	"path_of_transforms_json": "path/of/transforms/json/file",
 	"path_of_MIV_json_file": "path/of/directory/where/it/has/yuv/files",
 
-	"images_base_dir": "/data/jychoi/SKKU_VRroom2d",
+	"images_base_dir": "/path/of/images/dir",
 	"result_dir": "./m_ingp_results",
 
 	"input_video_width_height": "1920x1080",
