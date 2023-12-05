@@ -1,16 +1,18 @@
 {
 	"train_exp_id": "sample",
-	"render_exp_id": "p01",
+	"render_exp_id": "sample_render",
+	"render_mode": "texture",    
 
-	"result_dir": "./results",
+	"result_dir": "./m_ingp_results",
 
 	"frame_start": 1,
-	"frame_end": 10,
+	"frame_end": 100,
 
-	"render_pose_trace": "true",
+	"render_pose_trace": "false",
 	"path_of_MIV_pose_trace_file": "path/of/miv-format-pose-trace-file.csv",
 
-	"render_test_set": "false",
-	"test_set_view": [6, 8]
+	"render_test_set": "true",
+	"test_set_view": [14],
 
+	"cuda_device_nums": [0, 1, 2, 3]
 }
