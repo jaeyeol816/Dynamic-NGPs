@@ -114,13 +114,12 @@ else:
 
 
 # Step2. camera parameter conversion
+os.system(f'mkdir {result_dir}/train_{train_id}/frames')
+for F in range(frame_start, frame_end + 1):
+	os.system(f'mkdir {result_dir}/train_{train_id}/frames/frame{F}')
 if use_transforms_json == "true":
 	os.system(f'cp {path_of_transforms_json} {result_dir}/train_{train_id}/transforms.json')
 else:
-	os.system(f'mkdir {result_dir}/train_{train_id}/frames')
-	for F in range(frame_start, frame_end + 1):
-		os.system(f'mkdir {result_dir}/train_{train_id}/frames/frame{F}')
-
 	subprocess.call(f'python ./camorph/main.py 0 {miv_json_path} {result_dir}/train_{train_id}/transforms.json \
 			{num_of_views} 0', shell=True)
 
