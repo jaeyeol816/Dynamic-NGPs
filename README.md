@@ -66,7 +66,7 @@ cd Dynamic-NGP
 ```bash
 conda env create -f dy_ngp.yml
 ```
-- The command above helps you make the suitable anaconda environment named `miv_ngp` for this software.
+- The command above helps you make the suitable anaconda environment named `dy_ngp` for this software.
 ```bash
 conda activate dy_ngp
 ```
